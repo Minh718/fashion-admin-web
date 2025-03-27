@@ -5,53 +5,61 @@ import Breadcrumbs from "../../components/Breadcrumbs";
 import Pagination from "../../components/Pagination";
 import { useOutletContext } from "react-router-dom";
 import { menuItemsEnum } from "../../constants";
-const links = [{
-    name: 'Home',
-    url: '/'
-},
-{
-    name: 'Products',
-    url: '/products'
-}]
+const links = [
+  {
+    name: "Home",
+    url: "/",
+  },
+  {
+    name: "Products",
+    url: "/products",
+  },
+];
 const ProductsAdmin = () => {
-    const { setActiveItem } = useOutletContext();
+  const { setActiveItem } = useOutletContext();
   const [products, setProducts] = useState([
     {
       id: 1,
       name: "Smartphone X",
       totalSales: 1500,
       price: 999.99,
-      image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80",
+      image:
+        "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80",
       totalRevenue: 1499985,
-      status: "Active"
+      status: "Active",
     },
     {
       id: 2,
       name: "Laptop Pro",
       totalSales: 800,
       price: 1499.99,
-      image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80",
+      image:
+        "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80",
       totalRevenue: 1199992,
-      status: "Active"
+      status: "Active",
     },
     {
       id: 3,
       name: "Wireless Earbuds",
       totalSales: 3000,
       price: 129.99,
-      image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80",
+      image:
+        "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80",
       totalRevenue: 389970,
-      status: "Low Stock"
-    }
+      status: "Low Stock",
+    },
   ]);
 
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
-  const [filterTerm, setFilterTerm] = useState('');
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: "ascending",
+  });
+  const [filterTerm, setFilterTerm] = useState("");
 
   const handleSort = (key) => {
-    let direction = 'ascending';
-    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
-      direction = 'descending';
+    let direction = "ascending";
+    if (sortConfig.key === key && sortConfig.direction === "ascending") {
+      direction = "descending";
     }
     setSortConfig({ key, direction });
   };
@@ -61,10 +69,10 @@ const ProductsAdmin = () => {
     if (sortConfig.key !== null) {
       sortableProducts.sort((a, b) => {
         if (a[sortConfig.key] < b[sortConfig.key]) {
-          return sortConfig.direction === 'ascending' ? -1 : 1;
+          return sortConfig.direction === "ascending" ? -1 : 1;
         }
         if (a[sortConfig.key] > b[sortConfig.key]) {
-          return sortConfig.direction === 'ascending' ? 1 : -1;
+          return sortConfig.direction === "ascending" ? 1 : -1;
         }
         return 0;
       });
@@ -72,17 +80,17 @@ const ProductsAdmin = () => {
     return sortableProducts;
   }, [products, sortConfig]);
 
-  const filteredProducts = sortedProducts.filter(product =>
-    product.name.toLowerCase().includes(filterTerm.toLowerCase()) ||
-    product.status.toLowerCase().includes(filterTerm.toLowerCase())
+  const filteredProducts = sortedProducts.filter(
+    (product) =>
+      product.name.toLowerCase().includes(filterTerm.toLowerCase()) ||
+      product.status.toLowerCase().includes(filterTerm.toLowerCase())
   );
-useEffect(() => {
-    setActiveItem(menuItemsEnum.PRODUCTS)
-}
-, [])
+  useEffect(() => {
+    setActiveItem(menuItemsEnum.PRODUCTS);
+  }, []);
   return (
-    <div className="container mx-auto px-4 py-8">
-        <Breadcrumbs links={links} />
+    <div>
+      <Breadcrumbs links={links} />
 
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Products Admin</h1>
@@ -104,7 +112,7 @@ useEffect(() => {
         </div>
         <div className="text-gray-600">
           <FaSort className="inline mr-2" />
-          <span>Sort by: {sortConfig.key || 'None'}</span>
+          <span>Sort by: {sortConfig.key || "None"}</span>
         </div>
       </div>
 
@@ -112,31 +120,73 @@ useEffect(() => {
         <table className="w-full table-auto">
           <thead>
             <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-              <th className="py-3 px-6 text-left cursor-pointer" onClick={() => handleSort('name')}>Name</th>
+              <th
+                className="py-3 px-6 text-left cursor-pointer"
+                onClick={() => handleSort("name")}
+              >
+                Name
+              </th>
               <th className="py-3 px-6 text-left">ID</th>
-              <th className="py-3 px-6 text-left cursor-pointer" onClick={() => handleSort('totalSales')}>Total Sales</th>
-              <th className="py-3 px-6 text-left cursor-pointer" onClick={() => handleSort('price')}>Price</th>
+              <th
+                className="py-3 px-6 text-left cursor-pointer"
+                onClick={() => handleSort("totalSales")}
+              >
+                Total Sales
+              </th>
+              <th
+                className="py-3 px-6 text-left cursor-pointer"
+                onClick={() => handleSort("price")}
+              >
+                Price
+              </th>
               <th className="py-3 px-6 text-left">Image</th>
-              <th className="py-3 px-6 text-left cursor-pointer" onClick={() => handleSort('totalRevenue')}>Total Revenue</th>
-              <th className="py-3 px-6 text-left cursor-pointer" onClick={() => handleSort('status')}>Status</th>
+              <th
+                className="py-3 px-6 text-left cursor-pointer"
+                onClick={() => handleSort("totalRevenue")}
+              >
+                Total Revenue
+              </th>
+              <th
+                className="py-3 px-6 text-left cursor-pointer"
+                onClick={() => handleSort("status")}
+              >
+                Status
+              </th>
               <th className="py-3 px-6 text-center">Actions</th>
             </tr>
           </thead>
           <tbody className="text-gray-600 text-sm font-light">
             {filteredProducts.map((product) => (
-              <tr key={product.id} className="border-b border-gray-200 hover:bg-gray-100">
+              <tr
+                key={product.id}
+                className="border-b border-gray-200 hover:bg-gray-100"
+              >
                 <td className="py-3 px-6 text-left whitespace-nowrap">
                   <div className="font-medium">{product.name}</div>
                 </td>
                 <td className="py-3 px-6 text-left">{product.id}</td>
                 <td className="py-3 px-6 text-left">{product.totalSales}</td>
-                <td className="py-3 px-6 text-left">${product.price.toFixed(2)}</td>
                 <td className="py-3 px-6 text-left">
-                  <img src={product.image} alt={product.name} className="w-10 h-10 rounded-full" />
+                  ${product.price.toFixed(2)}
                 </td>
-                <td className="py-3 px-6 text-left">${product.totalRevenue.toLocaleString()}</td>
                 <td className="py-3 px-6 text-left">
-                  <span className={`${product.status === 'Active' ? 'bg-green-200 text-green-600' : 'bg-red-200 text-red-600'} py-1 px-3 rounded-full text-xs`}>
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-10 h-10 rounded-full"
+                  />
+                </td>
+                <td className="py-3 px-6 text-left">
+                  ${product.totalRevenue.toLocaleString()}
+                </td>
+                <td className="py-3 px-6 text-left">
+                  <span
+                    className={`${
+                      product.status === "Active"
+                        ? "bg-green-200 text-green-600"
+                        : "bg-red-200 text-red-600"
+                    } py-1 px-3 rounded-full text-xs`}
+                  >
                     {product.status}
                   </span>
                 </td>
@@ -156,16 +206,16 @@ useEffect(() => {
         </table>
       </div>
       <div className="flex justify-between">
-      <div className="text-gray-600 mt-4">
-        <span>Rows per page:</span>
-         <select className="border p-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <div className="text-gray-600 mt-4">
+          <span>Rows per page:</span>
+          <select className="border p-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
             <option value="10">10</option>
             <option value="20">20</option>
             <option value="30">30</option>
             <option value="40">40</option>
-        </select>
+          </select>
         </div>
-        <Pagination pageCount={10}/>
+        <Pagination pageCount={10} />
       </div>
     </div>
   );

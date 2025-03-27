@@ -29,4 +29,9 @@ const menuItemsEnum = {
   ORDERS: "Orders",
   MESSAGES: "Messages",
 };
-export { menuItemsEnum, menuItemsSideBar };
+
+const baseURL = import.meta.env.VITE_API_URL + "/api";
+
+const API_URL = import.meta.env.VITE_API_URL;
+
+export { menuItemsEnum, menuItemsSideBar, baseURL, API_URL };

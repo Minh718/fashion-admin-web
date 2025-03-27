@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Sidebar from "../components/SideBar";
 import { Outlet } from "react-router-dom";
 import Header from "../components/Header";
+import { ToastContainer } from "react-toastify";
 export default function Home() {
   const [isOpenSideBar, setIsOpenSideBar] = React.useState(true);
   const toggleSidebar = () => setIsOpenSideBar(!isOpenSideBar);
@@ -25,11 +26,14 @@ export default function Home() {
           <Header isOpenSideBar={isOpenSideBar} toggleSidebar={toggleSidebar} />
           <div className="flex justify-center">
             <div className="max-w-screen-xl w-full">
-              <Outlet context={{ setActiveItem }} />
+              <div className="container mx-auto px-4 py-8">
+                <Outlet context={{ setActiveItem }} />
+              </div>
             </div>
           </div>
         </div>
       </main>
+      <ToastContainer />
     </div>
   );
 }

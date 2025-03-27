@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FaSpinner } from "react-icons/fa";
+import { adminLogin } from "../../services/adminService";
+import { useDispatch } from "react-redux";
+import { setUserInfo } from "../../store/user/userSlice";
+import Cookies from "js-cookie";
+import { notifyError } from "../../components/toastNotify";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -9,6 +14,7 @@ const LoginPage = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const validateEmail = (email) => {
     const re = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
@@ -33,15 +39,21 @@ const LoginPage = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!emailError && !passwordError) {
       setIsLoading(true);
       // Simulating API call
-      setTimeout(() => {
-        setIsLoading(false);
-        alert("Login successful!");
-      }, 2000);
+
+      try {
+        const result = await adminLogin({ username: email, password });
+        dispatch(setUserInfo(result));
+        Cookies.set("accessToken", result.accessToken);
+        Cookies.set("refreshToken", result.refreshToken);
+        Cookies.set("x-user-id", result.id);
+      } catch (err) {
+        notifyError("Password or username is incorrect");
+      }
     }
   };
 
