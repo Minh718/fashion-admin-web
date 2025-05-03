@@ -16,6 +16,9 @@ import { FaUserGroup } from "react-icons/fa6";
 import { MdInventory, MdOutlinePlaylistAddCheck } from "react-icons/md";
 import { getStatisticsDashboard } from "../../services/StatisticService";
 import BoxStatistic from "./components/BoxStatistic";
+import Loading from "../../components/Loading";
+import { menuItemsEnum } from "../../constants";
+import { useOutletContext } from "react-router-dom";
 // Register the necessary components with Chart.js
 ChartJS.register(
   CategoryScale,
@@ -49,7 +52,7 @@ const data = {
   labels: [],
   datasets: [
     {
-      label: "Sales (k VNĐ)",
+      label: "Sales ($)",
       data: [],
       borderColor: "rgba(75, 192, 192, 1)",
       backgroundColor: "rgba(75, 192, 192, 0.2)",
@@ -81,9 +84,11 @@ const options: ChartOptions<"line"> = {
 };
 
 export default function DashboardPage() {
+  const { setActiveItem } = useOutletContext() as any;
   const [totalOrders, setTotalOrders] = useState({ value: 0, percent: -1 });
   const [totalRevenue, setTotalRevenue] = useState({ value: 0, percent: 2 });
   const [totalQuantity, setTotalQuantity] = useState({ value: 0, percent: 0 });
+  const [isLoading, setIsLoading] = useState(true);
   const [totalNewCustommers, setTotalNewCustommers] = useState({
     value: 0,
     percent: 0,
@@ -92,6 +97,7 @@ export default function DashboardPage() {
   const [typeStatistic, setTypeStatistic] = useState(typeStatistics[2]);
 
   useEffect(() => {
+    setIsLoading(true);
     (async () => {
       const res = await getStatisticsDashboard(typeStatistic.value);
       console.log(res);
@@ -106,9 +112,14 @@ export default function DashboardPage() {
           labels,
           datasets: [{ ...dataChart.datasets[0], data }],
         });
+        setIsLoading(false);
       }
     })();
   }, [typeStatistic.value]);
+  useEffect(() => {
+    setActiveItem(menuItemsEnum.DASHBOARD);
+  }, []);
+  if (isLoading) return <Loading />;
   return (
     <>
       <div className="flex">

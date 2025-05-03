@@ -4,11 +4,11 @@ import { handleApiResponse } from "../utils/utilApi";
 import axios from "axios";
 import { baseURL } from "../constants";
 const getMyInfo = async () => {
-  const idUser = Cookies.get("x-user-id");
-  if (!idUser) return null;
+  const accessToken = Cookies.get("accessToken");
+  if (!accessToken) return null;
   try {
     const res = await api.get("/user/admin-info");
-    return res;
+    return handleApiResponse(res).result;
   } catch (err) {
     return null;
   }

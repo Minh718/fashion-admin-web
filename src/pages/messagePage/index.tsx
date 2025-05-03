@@ -13,7 +13,6 @@ const MessagesPage = () => {
   const [chatBoxs, setChatBoxs] = React.useState<any[]>([]);
   const dispatch = useDispatch();
 
-
   const handleClientClick = (clientId) => {
     setSelectedClient(clientId);
     setIsMobileMenuOpen(false);
@@ -35,7 +34,7 @@ const MessagesPage = () => {
     const fetchChatBoxs = async () => {
       try {
         const data = await getChatBoxListByAdmin();
-        // setChatBoxs(data);
+        setChatBoxs(data);
       } catch (err) {
         notifyError("Error occurred");
       }
@@ -72,10 +71,10 @@ const MessagesPage = () => {
                 <div className="flex items-center gap-5">
                   <img
                     className="w-10 h-10 rounded-full"
-                    src={chatBox.image}
+                    src={chatBox.image || "/public/avatar.jpg"}
                     alt={chatBox.name}
                   />
-                  <div>{chatBox.name}</div>
+                  <div>{chatBox.name || "user"}</div>
                 </div>
                 {!chatBox.isSeen && (
                   <div className="w-2.5 h-2.5 rounded-full bg-red-600"></div>

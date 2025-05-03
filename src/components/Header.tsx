@@ -15,6 +15,8 @@ import sockjs from "sockjs-client/dist/sockjs";
 import { RootState } from "../store";
 import { useDispatch, useSelector } from "react-redux";
 import { setChatBox } from "../store/chatbox/chatBoxSlice";
+import { Link } from "react-router-dom";
+import { FaMessage } from "react-icons/fa6";
 interface User {
   id: number;
   name: string;
@@ -129,7 +131,7 @@ export default function Header({ isOpenSideBar, toggleSidebar }) {
     const fetchChatBoxs = async () => {
       try {
         const data = await getChatBoxListUnSeenByAdmin();
-        // setChatBoxs(data);
+        setChatBoxs(data);
       } catch (err) {
         notifyError("Error occurred");
       }
@@ -158,15 +160,14 @@ export default function Header({ isOpenSideBar, toggleSidebar }) {
               <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             </div>
           </div>
-          <div className="relative">
+          <div className="relative cursor-pointer" onClick={toggleMessageList}>
             <button
-              onClick={toggleMessageList}
               className="text-2xl focus:outline-none"
               aria-label="Open Messages"
             >
-              <FaEnvelope />
+              <FaMessage size={30} />
             </button>
-            <div className="w-[20px] h-[20px] rounded-full bg-red-600 absolute top-0 right-2 font-bold flex items-center justify-center text-white">
+            <div className="w-[20px] h-[20px] rounded-full bg-red-600 absolute -top-2 -right-2 font-bold flex items-center justify-center text-white">
               {numNewChat}
             </div>
             {isMessageListOpen && (
@@ -182,14 +183,16 @@ export default function Header({ isOpenSideBar, toggleSidebar }) {
                       className="cursor-pointer hover:bg-gray-100 px-4 py-2"
                       onClick={() => handleOpenChatBox(chatBox)}
                     >
-                      <div className="flex items-center justify-between w-[300px] p-2">
+                      <div className="flex items-center justify-between p-2">
                         <div className="flex items-center gap-5">
                           <img
                             className="w-10 h-10 rounded-full"
-                            src={chatBox.image}
-                            alt={chatBox.name}
+                            src={chatBox.image || "/public/avatar.jpg"}
+                            alt={chatBox.name || "user"}
                           />
-                          <div>{chatBox.name}</div>
+                          <div className="text-black font-bold">
+                            {chatBox.name}
+                          </div>
                         </div>
                         {!chatBox.isSeen && (
                           <div className="w-2.5 h-2.5 rounded-full bg-red-600"></div>
@@ -198,13 +201,14 @@ export default function Header({ isOpenSideBar, toggleSidebar }) {
                     </div>
                   ))
                 )}
-
-                <button
-                  className="flex justify-center w-full text-blue-600 hover:underline mt-2"
-                  onClick={handleCloseMessageList}
-                >
-                  View all
-                </button>
+                <Link to={"/messages"}>
+                  <button
+                    className="flex justify-center w-full py-2 text-blue-600 hover:underline mt-2"
+                    onClick={handleCloseMessageList}
+                  >
+                    View all
+                  </button>
+                </Link>
               </div>
             )}
           </div>

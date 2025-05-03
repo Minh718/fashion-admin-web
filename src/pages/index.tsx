@@ -25,7 +25,7 @@ export default function Home() {
         <div className="justify-center bg-slate-200 min-h-[100vh]">
           <Header isOpenSideBar={isOpenSideBar} toggleSidebar={toggleSidebar} />
           <div className="flex justify-center">
-            <div className="max-w-screen-xl w-full">
+            <div className="max-w-screen-2xl w-full">
               <div className="container mx-auto px-4 py-8">
                 <Outlet context={{ setActiveItem }} />
               </div>

@@ -40,8 +40,12 @@ export const { setUserInfo, clearUserInfo, setLoading } = userSlice.actions;
 
 export default userSlice.reducer;
 
-export const initializeUser = () => async (dispatch) => {
-  const user = await getMyInfo();
-  if (user === null) dispatch(setLoading(false));
-  else dispatch(setUserInfo(user));
+export const initializeUser = async (dispatch) => {
+  try {
+    const user = await getMyInfo();
+    dispatch(user ? setUserInfo(user) : setLoading(false));
+  } catch (error) {
+    console.error("Error fetching user info:", error);
+    dispatch(setLoading(false));
+  }
 };

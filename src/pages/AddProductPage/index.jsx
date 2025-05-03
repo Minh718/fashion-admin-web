@@ -2,8 +2,12 @@ import React, { useEffect, useState } from "react";
 import { FiUpload, FiPlus, FiX } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { menuItemsEnum } from "../../constants";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import Breadcrumbs from "../../components/Breadcrumbs";
+import { notifyError, notifySuccess } from "../../components/toastNotify";
+import { getALlBrands } from "../../services/brandService";
+import { getAllCategories } from "../../services/CategoryService";
+import { addProduct } from "../../services/ProductService";
 const links = [
   {
     name: "Home",
@@ -24,6 +28,7 @@ const AddProductPage = () => {
     price: "",
     percentage: "",
     subcategoryId: "",
+    categoryId: "",
     brandId: "",
     status: false,
     description: "",
@@ -36,9 +41,12 @@ const AddProductPage = () => {
   const [mainImage, setMainImage] = useState(null);
   const [additionalImages, setAdditionalImages] = useState([]);
   const [errors, setErrors] = useState({});
+  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { setActiveItem }: any = useOutletContext();
-
+  const { setActiveItem } = useOutletContext();
+  const navigate = useNavigate();
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prevData) => ({
@@ -47,7 +55,10 @@ const AddProductPage = () => {
     }));
     validateField(name, type === "checkbox" ? checked : value);
   };
-
+  const handleCategoryChange = (e) => {
+    handleInputChange(e);
+    setSubCategories(categories.find((category => category.id ===Number(e.target.value))).subCategories)
+  }
   const handleMainImageUpload = (e) => {
     const file = e.target.files[0];
     setMainImage(file);
@@ -88,45 +99,77 @@ const AddProductPage = () => {
     }
     setErrors((prevErrors) => ({ ...prevErrors, [name]: error }));
   };
-  const subcategories = [
-    { id: 1, name: "Electronics" },
-    { id: 2, name: "Clothing" },
-    { id: 3, name: "Home & Garden" },
-  ];
-
-  const brands = [
-    { id: 1, name: "Apple" },
-    { id: 2, name: "Samsung" },
-    { id: 3, name: "Nike" },
-  ];
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
-    // Validate all fields
+  
+    // Validate fields
     Object.keys(formData).forEach((key) => validateField(key, formData[key]));
-
-    // Check if there are any errors
+  
     const hasErrors = Object.values(errors).some((error) => error !== "");
-
+  
     if (!hasErrors) {
+      const form = new FormData();
+  
+      // Append regular fields
+      form.append("name", formData.productName);
+      form.append("price", formData.price);
+      form.append("percent", formData.percentage);
+      form.append("subCate_id", formData.subcategoryId);
+      form.append("brand_id", formData.brandId);
+      form.append("status", formData.status);
+      form.append("description", formData.description || "");
+      form.append("model", formData.model || "");
+      form.append("material", formData.material || "");
+      form.append("origin", formData.origin || "");
+      form.append("warranty", formData.warranty || "");
+      form.append("madeIn", formData.madeIn || "");
+  
+      // Append the main image
+      if (mainImage) {
+        form.append("file", mainImage);
+      }
+  
+      // Append additional images
+      if (additionalImages && additionalImages.length > 0) {
+        additionalImages.forEach((image) => {
+          form.append("files", image);
+        });
+      }
+  
       try {
-        // Simulating API call
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        console.log("Form submitted:", formData);
-        console.log("Main Image:", mainImage);
-        console.log("Additional Images:", additionalImages);
-        // Reset form or show success message
+        // Replace this with your actual API call, e.g., axios or fetch
+        await addProduct(form);
+  
+        notifySuccess("Add product successfully");
+        navigate("/products")
+        // Optional: Reset form or show success message
       } catch (error) {
-        console.error("Error submitting form:", error);
+        notifyError("Error occur");
       }
     }
-
+  
     setIsSubmitting(false);
   };
+  
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [brands, categories] = await Promise.all([
+          getALlBrands(),
+          getAllCategories()
+        ]);
+        setBrands(brands);
+        setCategories(categories);
+      } catch (err) {
+        notifyError("Error occurred");
+      }
+    };
+  
     setActiveItem(menuItemsEnum.PRODUCTS);
+    fetchData();
   }, []);
+  
   return (
     <div className="bg-gray-100 flex items-center justify-center">
       <div className="px-4 py-8 bg-white rounded-lg shadow-md overflow-hidden w-full max-w-7xl">
@@ -206,6 +249,35 @@ const AddProductPage = () => {
               </div>
             </div>
             <div className="w-1/3 px-2">
+            <div className="mb-4">
+                <label
+                  htmlFor="categoryId"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Category
+                </label>
+                <select
+                  name="categoryId"
+                  id="categoryId"
+                  value={formData.categoryId}
+                  onChange={handleCategoryChange}
+                  className={`w-full border ${
+                    errors.categoryId ? "border-red-500" : "border-gray-300"
+                  } rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                >
+                  <option value="">Select a category</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.categoryId && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.categoryId}
+                  </p>
+                )}
+              </div>
               <div className="mb-4">
                 <label
                   htmlFor="subcategoryId"
@@ -223,7 +295,7 @@ const AddProductPage = () => {
                   } rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                 >
                   <option value="">Select a subcategory</option>
-                  {subcategories.map((subcategory) => (
+                  {subCategories.map((subcategory) => (
                     <option key={subcategory.id} value={subcategory.id}>
                       {subcategory.name}
                     </option>

@@ -56,7 +56,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
   }, [messages, isViewMore]);
 
   return (
-    <div className="bg-white w-[330px] h-[400px] rounded-lg shadow-lg">
+    <div className="bg-white text-black w-[360px] h-[450px] rounded-lg shadow-lg">
       <div className="flex flex-col h-full">
         <div className="flex items-center justify-between py-2 px-4 border-b">
           <div className="flex items-center gap-2">
@@ -105,7 +105,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
                 className={`p-2 rounded-lg ${
                   messageItem.idSend === userInfo.id
                     ? "bg-blue-500 text-white"
-                    : "bg-gray-300"
+                    : "bg-gray-300 text-black"
                 }`}
               >
                 {messageItem.message}
@@ -128,7 +128,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
             onKeyDown={handleKeyDown}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            className="flex-1 p-2 rounded-full border outline-none"
+            className="flex-1 p-2 rounded-full border outline-none text-black"
           />
           <button
             onClick={handleMessage}

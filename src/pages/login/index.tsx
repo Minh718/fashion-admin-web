@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { setUserInfo } from "../../store/user/userSlice";
 import Cookies from "js-cookie";
 import { notifyError } from "../../components/toastNotify";
+import { ToastContainer } from "react-toastify";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -53,6 +54,9 @@ const LoginPage = () => {
         Cookies.set("x-user-id", result.id);
       } catch (err) {
         notifyError("Password or username is incorrect");
+        setIsLoading(false);
+        setPassword("");
+        setEmail("");
       }
     }
   };
@@ -158,6 +162,7 @@ const LoginPage = () => {
           </div>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 };

@@ -71,12 +71,12 @@ api.interceptors.response.use(
           Cookies.remove("accessToken");
           Cookies.remove("refreshToken");
           Cookies.remove("x-user-id");
-          window.location.href = "/login"; // Redirect to login page
+          window.location.href = "/signin"; // Redirect to signin page
           return Promise.reject(refreshError);
         }
       } else {
-        // No refresh token available, redirect to login
-        window.location.href = "/login";
+        // No refresh token available, redirect to signin
+        window.location.href = "/signin";
         return Promise.reject(error);
       }
     }
