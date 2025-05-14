@@ -12,7 +12,7 @@ import {
   activeUser,
   getAllUser,
   unactiveUser,
-} from "../../services/userService";
+} from "../../services/UserService";
 const links = [
   {
     name: "Home",
