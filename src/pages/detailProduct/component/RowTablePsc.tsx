@@ -21,7 +21,9 @@ export default function RowTablePsc({ psc, price, handleUpdateQuantity }) {
         />
       </td>
       <td className="px-2 py-1 text-center">{psc.totalSales}</td>
-      <td className="px-2 py-1 text-center">${psc.totalSales * price}</td>
+      <td className="px-2 py-1 text-center">
+        ${(psc.totalSales * price).toFixed(2)}
+      </td>
       <td className="px-2 py-1 text-center">
         {curQuantity !== psc.totalQuantity ? (
           <button
